@@ -30,6 +30,55 @@ const char *keywords[] = {
     "while"
 };
 const int num_keywords = sizeof(keywords) / sizeof(keywords[0]);
+int is_keyword(const char *identifier) {
+    for (int i = 0; i < num_keywords; i++) {
+        if (strcmp(identifier, keywords[i]) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int findSymbolIndex(const char *name) {
+    for (int i = 0; i < symbolCount; i++) {
+        if (strcmp(symbolTable[i].name, name) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void addSymbol(const char *name, const char *type, const char *value, int address, int size) {
+    int index = findSymbolIndex(name);
+    if (index == -1) {
+        if (symbolCount < MAX_SYMBOLS) {
+            strcpy(symbolTable[symbolCount].name, name);
+            strcpy(symbolTable[symbolCount].type, type);
+            strcpy(symbolTable[symbolCount].value, value);
+            symbolTable[symbolCount].address = address;
+            symbolTable[symbolCount].size = size;
+            symbolCount++;
+        } else {
+            printf("Symbol table is full.\n");
+        }
+    }
+}
+
+void printSymbolTable() {
+    printf("\nSymbol Table:\n\n");
+    printf("---------------------------------------------------------------\n");
+    printf("| %-15s | %-10s | %-10s | %-8s | %-4s |\n", "Name", "Type", "Value", "Address", "Size");
+    printf("|-----------------|------------|------------|----------|------|\n");
+    for (int i = 0; i < symbolCount; i++) {
+        printf("| %-15s | %-10s | %-10s | %-8d | %-4d |\n",
+               symbolTable[i].name,
+               symbolTable[i].type,
+               symbolTable[i].value,
+               symbolTable[i].address,
+               symbolTable[i].size);
+    }
+    printf("---------------------------------------------------------------\n");
+}
 
 int is_keyword(const char *identifier) {
     for (int i = 0; i < num_keywords; i++) {
